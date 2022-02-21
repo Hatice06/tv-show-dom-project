@@ -3,6 +3,7 @@ function setup() {
   const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
 }
+
 function makePageForEpisodes(episodeList) {
   const rootElem = document.getElementById("root");
   let oneShow = getOneShow();
