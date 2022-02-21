@@ -12,7 +12,7 @@ function makePageForEpisodes(episodeList) {
   // divEl.appendChild(pEl);
   // rootElem.appendChild(divEl);
   //rootElem.textContent = `Got ${episodeList.length} episode(s)`;
-  rootElem.textContent = oneShow.name;
+  rootElem.textContent = `${oneShow.name} test`;
 }
 
 window.onload = setup;
