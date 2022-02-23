@@ -21,14 +21,18 @@
   text-align: center;
 }
 
-.input-div{
+.search-div{
   display: flex;
 }
 
 input {
   padding: 10px;
-  margin: 10px;
+  margin: 10px 10px 10px 32px;
 
+}
+
+.search-counter{
+  font-size: larger;
 }
 
 
