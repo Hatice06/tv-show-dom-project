@@ -25,12 +25,16 @@
   display: flex;
 }
 
-input {
+input, .home-btn {
+  padding: 10px;
+  margin: 10px 10px 10px 32px;
+}
+
+select{
   padding: 10px;
   margin: 10px 10px 10px 32px;
 
 }
-
 .search-counter{
   font-size: larger;
 }
