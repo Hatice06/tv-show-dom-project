@@ -11,10 +11,10 @@ const episodeSelector = document.createElement("select");
 episodeSelector.id = "episode-select";
 
 //create input
-let inputEl = document.createElement("input");
-inputEl.type = "search";
-inputEl.className = "search-episodes";
-inputEl.placeholder = "Search keyword ";
+let input = document.createElement("input");
+input.type = "search";
+input.className = "search-episodes";
+input.placeholder = "Search keyword ";
 
 //episode search-counter
 let searchCounter = document.createElement("p");
@@ -25,15 +25,23 @@ let homeButton = document.createElement("button");
 homeButton.className = "home-btn";
 homeButton.innerText = "HOME";
 
-searchDiv.append(homeButton, episodeSelector, inputEl, searchCounter);
+searchDiv.append(homeButton, episodeSelector, input, searchCounter);
 rootEl.append(searchDiv, episodeContainer);
 
-const allEpisodes = getAllEpisodes();
+let allEpisodes = [];
+
+const showsUrl = `https://api.tvmaze.com/shows/82/episodes`;
 
 //render page on the window load;
 function setup() {
-  makePageForEpisodes(allEpisodes);
-  searchCounter.innerText = `Displaying ${allEpisodes.length} / ${allEpisodes.length} episodes`;
+  fetch(showsUrl)
+    .then((response) => response.json())
+    .then((data) => {
+      allEpisodes = data;
+      makePageForEpisodes(allEpisodes);
+      searchCounter.innerText = `Displaying ${allEpisodes.length} / ${allEpisodes.length} episodes`;
+    })
+    .catch((e) => console.log(e));
 }
 
 //build page for all episodes;
@@ -68,11 +76,11 @@ function makePageForEpisodes(episodeList) {
 }
 
 //search episodes event listener
-inputEl.addEventListener("keyup", () => {
+input.addEventListener("keyup", () => {
   let filteredEpisodes = allEpisodes.filter(
     (episode) =>
-      episode.summary.toLowerCase().includes(inputEl.value.toLowerCase()) ||
-      episode.name.toLowerCase().includes(inputEl.value.toLowerCase())
+      episode.summary.toLowerCase().includes(input.value.toLowerCase()) ||
+      episode.name.toLowerCase().includes(input.value.toLowerCase())
   );
 
   searchCounter.innerText = `Displaying ${filteredEpisodes.length} / ${allEpisodes.length} episodes`;
@@ -107,7 +115,7 @@ function formatSeriesAndEpisode(type, episode) {
 
 homeButton.addEventListener("click", () => {
   setup();
-  inputEl.value = "";
+  input.value = "";
 });
 
 window.onload = setup;
