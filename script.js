@@ -10,6 +10,10 @@ const episodes = document.querySelector(".episode-container");
 const episodeSelector = document.createElement("select");
 episodeSelector.id = "episode-select";
 
+//create show selector
+const showSelector = document.createElement("select");
+showSelector.id = "show-select";
+
 //create input
 let input = document.createElement("input");
 input.type = "search";
@@ -25,17 +29,30 @@ let homeButton = document.createElement("button");
 homeButton.className = "home-btn";
 homeButton.innerText = "HOME";
 
-searchDiv.append(homeButton, episodeSelector, input, searchCounter);
+searchDiv.append(
+  homeButton,
+  showSelector,
+  episodeSelector,
+  input,
+  searchCounter
+);
 rootEl.append(searchDiv, episodeContainer);
 
 let allEpisodes = [];
 
-const showsUrl = `https://api.tvmaze.com/shows/82/episodes`;
+//show option select dropdown menu
+let allShows = getAllShows().sort((a, b) => a.name.localeCompare(b.name));
+
+allShows.forEach((show) => {
+    let option = document.createElement("option");
+    option.value = show.id;
+    option.innerText = show.name;
+    showSelector.appendChild(option);   
+  });
 
 //render page on the window load;
 function setup() {
-  fetch(showsUrl)
-    .then((response) => response.json())
+  sendRequest(167)
     .then((data) => {
       allEpisodes = data;
       makePageForEpisodes(allEpisodes);
@@ -44,6 +61,16 @@ function setup() {
     .catch((e) => console.log(e));
 }
 
+function sendRequest(showId) {
+  const urlForTheRequest = `https://api.tvmaze.com/shows/${showId}/episodes`;
+
+  return fetch(urlForTheRequest)
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => console.log(error));
+}
 //build page for all episodes;
 function makePageForEpisodes(episodeList) {
   episodes.innerHTML = "";
@@ -64,31 +91,39 @@ function makePageForEpisodes(episodeList) {
     episodeCard.append(episodeTitle, episodeImg, episodeSummary);
     episodes.append(episodeCard);
   });
-
+  
+   
   //episode option select dropdown menu
+  episodeSelector.innerHTML = "";
   episodeList.forEach((episode) => {
-    let optionEl = document.createElement("option");
-    optionEl.value = episode.id;
-    optionEl.innerText = formatSeriesAndEpisode("option", episode);
-
-    episodeSelector.appendChild(optionEl);
+    let option = document.createElement("option");
+    option.value = episode.id;
+    option.innerText = formatSeriesAndEpisode("option", episode);
+    episodeSelector.appendChild(option);
   });
 }
 
-//search episodes event listener
-input.addEventListener("keyup", () => {
-  let filteredEpisodes = allEpisodes.filter(
-    (episode) =>
-      episode.summary.toLowerCase().includes(input.value.toLowerCase()) ||
-      episode.name.toLowerCase().includes(input.value.toLowerCase())
-  );
+//search episodes event listener - input search
+input.addEventListener("keyup", onKeyUp);
+
+function onKeyUp() {
+  let filteredEpisodes = allEpisodes.filter((episode) => {
+    let episodeName = episode.name.toLowerCase();
+    let episodeSummary = episode.summary.toLowerCase();
+    let searchInput = input.value.toLowerCase();
+    return (
+      episodeName.includes(searchInput) || episodeSummary.includes(searchInput)
+    );
+  });
 
   searchCounter.innerText = `Displaying ${filteredEpisodes.length} / ${allEpisodes.length} episodes`;
   makePageForEpisodes(filteredEpisodes);
-});
+}
 
 //episode selector
-episodeSelector.addEventListener("change", (event) => {
+episodeSelector.addEventListener("change", onEpisodeChange);
+
+function onEpisodeChange(event) {
   const episodeId = event.target.value;
 
   const episodeFindById = allEpisodes.filter(
@@ -96,7 +131,22 @@ episodeSelector.addEventListener("change", (event) => {
   );
   makePageForEpisodes(episodeFindById);
   searchCounter.innerText = `Displaying ${1} / ${allEpisodes.length} episodes`;
-});
+}
+
+//show selector
+showSelector.addEventListener("change", onShowChange);
+
+function onShowChange(event) {
+  const showId = event.target.value;
+
+  sendRequest(showId)
+    .then((data) => {
+      allEpisodes = data;
+      makePageForEpisodes(allEpisodes);
+      searchCounter.innerText = `Displaying ${allEpisodes.length} / ${allEpisodes.length} episodes`;
+    })
+    .catch((e) => console.log(e));
+}
 
 //episode title format(card or option)
 function formatSeriesAndEpisode(type, episode) {
