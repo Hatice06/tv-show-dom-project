@@ -1,8 +1,53 @@
 html {
  margin-top: 10px;
  background-color: rgb(221, 197, 162);
-  
 }
+
+.search-div {
+  display: flex;
+  justify-content:center
+}
+
+.show-element {
+  border: none;
+  border-radius: 10px;
+  width: 70%;
+  margin: 80px auto;;
+  background-color: antiquewhite;
+  padding: 30px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 5px 10px;
+}
+
+
+.show-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.show-title {
+  text-align: center;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+.more-details {
+  font-family:Arial, Helvetica, sans-serif;
+  background-color: antiquewhite;
+  border-radius: 10px;
+  width: fit-content;
+  width: 20%;
+  padding: 40px;
+  height:fit-content;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.show-summary {
+  width:45%;
+  line-height: 2;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
 .episode-container {
   display: flex;
   flex-wrap: wrap;
@@ -12,7 +57,7 @@ html {
 
 .episode-card {
   background-color: antiquewhite;
-  border: 4px solid burlywood;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   width: 20%;
   height: auto;
   min-width: 300px;
@@ -31,6 +76,8 @@ html {
 input, .home-btn {
   padding: 10px;
   margin: 10px 10px 10px 32px;
+  border-radius: 5px;
+  border: 1px solid rgb(175, 164, 164);
 }
 
 select{
@@ -38,10 +85,24 @@ select{
   min-width: 370px;
   padding: 10px;
   margin: 10px 10px 10px 5px;
+  border-radius: 5px;
+  border: 1px solid rgb(175, 164, 164);
 }
 
 .search-counter{
   font-size: larger;
 }
 
+span{
+  font-weight: 700;
+}
+
+button {
+  font-weight: 400;
+  font-size: 20px;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  background-color:rgb(68, 121, 172);
+  color:aliceblue;
+  height: 40px;
+}
 
