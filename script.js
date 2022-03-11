@@ -32,45 +32,20 @@ homeButton.innerText = "BACK TO SHOWS";
 
 searchDiv.append(
   homeButton,
-  "Shows:",
-  showSelector,
+  // showSelector,
   "Episodes:",
   episodeSelector,
   input,
   searchCounter
 );
-rootEl.append(searchDiv, episodeContainer);
 
 let allEpisodes = [];
 
 //render page on the window load;
 function setup() {
-  const allShows = getAllShows();
-
+  const allShows = getAllShows().sort((a, b) => a.name.localeCompare(b.name));
   makePageForShows(allShows);
-
-  // sendRequest(167)
-  //   .then((data) => {
-  //     allEpisodes = data;
-  //     makePageForEpisodes(allEpisodes);
-  //     showsList();
-  //     episodeList();
-  //     searchCounter.innerText = episodeCounter(allEpisodes);
-  //   })
-  //   .catch((e) => console.log(e));
-}
-
-function showsList() {
-  //show option select dropdown menu
-  let allShows = getAllShows().sort((a, b) => a.name.localeCompare(b.name));
-
-  showSelector.innerHTML = "";
-  allShows.forEach((show) => {
-    let option = document.createElement("option");
-    option.value = show.id;
-    option.innerText = show.name;
-    showSelector.appendChild(option);
-  });
+  searchDiv.hidden = true;
 }
 
 function sendRequest(showId) {
@@ -85,10 +60,10 @@ function sendRequest(showId) {
 }
 
 //build page for episodes;
-function makePageForEpisodes(array) {
+function makePageForEpisodes(currentEpisodes) {
   episodes.innerHTML = "";
 
-  array.forEach((episode) => {
+  currentEpisodes.forEach((episode) => {
     let episodeCard = document.createElement("div");
     let episodeTitle = document.createElement("h3");
     let episodeSummary = document.createElement("p");
@@ -109,7 +84,9 @@ function makePageForEpisodes(array) {
 //build page for shows;
 
 function makePageForShows(shows) {
+  let showName ="";
   shows.forEach((show) => {
+    //create show card
     const showElement = document.createElement("div");
     showElement.className = "show-element";
     const showDetails = document.createElement("div");
@@ -117,6 +94,17 @@ function makePageForShows(shows) {
     const moreDetails = document.createElement("div");
     moreDetails.className = "more-details";
 
+    // create show title- image - summary
+    const heading = document.createElement("h1");
+    heading.className = "show-title";
+    const img = document.createElement("img");
+    const summary = document.createElement("p");
+    summary.className = "show-summary";
+    heading.innerText = show.name;
+    img.src = show.image.medium;
+    summary.innerHTML = show.summary;
+
+   // create additional details
     const rated = document.createElement("p");
     rated.innerHTML = `<span>Rated:</span> ${show.rating.average}`;
     const genres = document.createElement("p");
@@ -127,32 +115,22 @@ function makePageForShows(shows) {
     runtime.innerHTML = `<span>Runtime:</span> ${show.runtime}`;
     moreDetails.append(rated, genres, status, runtime);
 
-
-
-    const heading = document.createElement("h1");
-    heading.className = "show-title";
-    const summary = document.createElement("p");
-    summary.className = "show-summary";
-    const img = document.createElement("img");
-    img.src = show.image.medium;
-    heading.innerText = show.name;
-    summary.innerHTML = show.summary;
-
-    showDetails.append(img, summary,moreDetails);
+    showDetails.append(img, summary, moreDetails);
     showElement.append(heading, showDetails);
     showList.appendChild(showElement);
 
+    // click shows
     showElement.addEventListener("click", () => {
       const showId = show.id;
-      sendRequest(showId).then((data) => {
-        currentEpisodes = data;
-        searchDiv.hidden = true;
-        showList.hidden = true;
-        makePageForEpisodes(currentEpisodes);
-      });
+      let showName = show.name;
+          sendRequest(showId).then((data) => {
+            allEpisodes = data;
+            showList.hidden = true;
+            makePageForEpisodes(allEpisodes);
+            episodeList();
+          });
     });
   });
-  return shows;
 }
 
 function episodeList() {
@@ -230,9 +208,9 @@ function formatSeriesAndEpisode(type, episode) {
 }
 
 homeButton.addEventListener("click", () => {
-  episodeContainer.hidden = true;
   searchDiv.hidden = true;
   showList.hidden = false;
+  showList.innerHTML = "";
   setup();
   input.value = "";
 });

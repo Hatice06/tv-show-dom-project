@@ -62,7 +62,7 @@ html {
   height: auto;
   min-width: 300px;
   padding: 0px 10px 10px 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   margin: 20px;
   text-align: center;
 }
@@ -76,7 +76,7 @@ html {
 input, .home-btn {
   padding: 10px;
   margin: 10px 10px 10px 32px;
-  border-radius: 5px;
+  border-radius: 10px;
   border: 1px solid rgb(175, 164, 164);
 }
 
@@ -85,7 +85,7 @@ select{
   min-width: 370px;
   padding: 10px;
   margin: 10px 10px 10px 5px;
-  border-radius: 5px;
+  border-radius: 10px;
   border: 1px solid rgb(175, 164, 164);
 }
 
