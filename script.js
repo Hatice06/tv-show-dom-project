@@ -5,7 +5,6 @@ const episodeContainer = document.querySelector(".episode-container");
 
 //get search div for search
 const searchDiv = document.querySelector(".search-div");
-const episodes = document.querySelector(".episode-container");
 
 //create episode selector
 const episodeSelector = document.createElement("select");
@@ -32,63 +31,28 @@ homeButton.innerText = "BACK TO SHOWS";
 
 searchDiv.append(
   homeButton,
-  // showSelector,
   "Episodes:",
   episodeSelector,
   input,
   searchCounter
 );
 
-let allEpisodes = [];
-
 //render page on the window load;
 function setup() {
   const allShows = getAllShows().sort((a, b) => a.name.localeCompare(b.name));
   makePageForShows(allShows);
-  searchDiv.hidden = true;
 }
 
-function sendRequest(showId) {
-  const urlForTheRequest = `https://api.tvmaze.com/shows/${showId}/episodes`;
-
-  return fetch(urlForTheRequest)
-    .then((response) => response.json())
-    .then((data) => {
-      return data;
-    })
-    .catch((error) => console.log(error));
-}
-
-//build page for episodes;
-function makePageForEpisodes(currentEpisodes) {
-  episodes.innerHTML = "";
-
-  currentEpisodes.forEach((episode) => {
-    let episodeCard = document.createElement("div");
-    let episodeTitle = document.createElement("h3");
-    let episodeSummary = document.createElement("p");
-    let episodeImg = document.createElement("img");
-
-    episodeCard.className = "episode-card";
-    episodeTitle.className = "episode-title";
-    episodeImg.src = episode.image.medium;
-
-    episodeTitle.innerText = formatSeriesAndEpisode("card", episode);
-
-    episodeSummary.innerHTML = episode.summary;
-    episodeCard.append(episodeTitle, episodeImg, episodeSummary);
-    episodes.append(episodeCard);
-  });
-}
+let allEpisodes = [];
 
 //build page for shows;
-
 function makePageForShows(shows) {
-  let showName ="";
+  searchDiv.classList.add("hidden");
+
   shows.forEach((show) => {
     //create show card
-    const showElement = document.createElement("div");
-    showElement.className = "show-element";
+    const showCard = document.createElement("div");
+    showCard.className = "show-element";
     const showDetails = document.createElement("div");
     showDetails.className = "show-details";
     const moreDetails = document.createElement("div");
@@ -104,7 +68,7 @@ function makePageForShows(shows) {
     img.src = show.image.medium;
     summary.innerHTML = show.summary;
 
-   // create additional details
+    // create additional details
     const rated = document.createElement("p");
     rated.innerHTML = `<span>Rated:</span> ${show.rating.average}`;
     const genres = document.createElement("p");
@@ -116,39 +80,77 @@ function makePageForShows(shows) {
     moreDetails.append(rated, genres, status, runtime);
 
     showDetails.append(img, summary, moreDetails);
-    showElement.append(heading, showDetails);
-    showList.appendChild(showElement);
+    showCard.append(heading, showDetails);
+    showList.appendChild(showCard);
 
     // click shows
-    showElement.addEventListener("click", () => {
+    showCard.addEventListener("click", () => {
+      searchDiv.classList.remove("hidden");
       const showId = show.id;
-      let showName = show.name;
-          sendRequest(showId).then((data) => {
-            allEpisodes = data;
-            showList.hidden = true;
-            makePageForEpisodes(allEpisodes);
-            episodeList();
-          });
+      sendRequest(showId).then((data) => {
+        allEpisodes = data;
+        showList.hidden = true;
+        makePageForEpisodes(allEpisodes);
+        episodeDropDownList();
+      });
     });
   });
 }
 
-function episodeList() {
-  //episode option select dropdown menu
+//get episode details of selected show from API
+function sendRequest(showId) {
+  const urlForTheRequest = `https://api.tvmaze.com/shows/${showId}/episodes`;
+
+  return fetch(urlForTheRequest)
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((error) => console.log(error));
+}
+
+//build page for episodes;
+
+function makePageForEpisodes(currentEpisodes) {
+  episodeContainer.innerHTML = "";
+  episodeContainer.classList.remove("hidden");
+
+  currentEpisodes.forEach((episode) => {
+    let episodeCard = document.createElement("div");
+    let episodeTitle = document.createElement("h3");
+    let episodeSummary = document.createElement("p");
+    let episodeImg = document.createElement("img");
+
+    episodeCard.className = "episode-card";
+    episodeTitle.className = "episode-title";
+    episodeImg.src = episode.image.medium;
+
+    episodeTitle.innerText = formatSeriesAndEpisode("card", episode);
+
+    episodeSummary.innerHTML = episode.summary;
+    episodeCard.append(episodeTitle, episodeImg, episodeSummary);
+    episodeContainer.append(episodeCard);
+    episodeCounter(currentEpisodes);
+    searchCounter.innerText = episodeCounter(currentEpisodes);
+  });
+}
+
+//episode option select dropdown menu
+function episodeDropDownList() {
   episodeSelector.innerHTML = "";
 
   allEpisodes.forEach((episode) => {
     let option = document.createElement("option");
     option.value = episode.id;
-    option.innerText = formatSeriesAndEpisode("option", episode);
+    option.innerText = formatSeriesAndEpisode("dropDown", episode);
     episodeSelector.appendChild(option);
   });
 }
 
-//search keyword event listener - input search
-input.addEventListener("keyup", onKeyUp);
+//search and filter keyword event listener - input search
+input.addEventListener("keyup", searchOnKeyUp);
 
-function onKeyUp() {
+function searchOnKeyUp() {
   let filteredEpisodes = allEpisodes.filter((episode) => {
     let episodeName = episode.name.toLowerCase();
     let episodeSummary = episode.summary.toLowerCase();
@@ -158,65 +160,68 @@ function onKeyUp() {
     );
   });
 
-  searchCounter.innerText = episodeCounter(filteredEpisodes);
+  episodeCounter(filteredEpisodes);
   makePageForEpisodes(filteredEpisodes);
 }
 
-//episode selector
+//episode selector (from dropdown) and show on screen
 episodeSelector.addEventListener("change", onEpisodeChange);
 
 function onEpisodeChange(event) {
   const episodeId = event.target.value;
 
-  const episodeFindById = allEpisodes.filter(
+  //find the selected episode
+  const findEpisodeById = allEpisodes.filter(
     (episode) => episode.id == episodeId
   );
-  makePageForEpisodes(episodeFindById);
-  searchCounter.innerText = episodeCounter(episodeFindById);
+  makePageForEpisodes(findEpisodeById);
+  episodeCounter(findEpisodeById);
 }
 
-//show selector
-showSelector.addEventListener("change", onShowChange);
+//episode title format(card or dropdown/option)
 
-function onShowChange(event) {
-  const showId = event.target.value;
-  input.value = "";
-
-  sendRequest(showId)
-    .then((data) => {
-      allEpisodes = data;
-      episodeList();
-      makePageForEpisodes(allEpisodes);
-      searchCounter.innerText = episodeCounter(allEpisodes);
-    })
-    .catch((e) => console.log(e));
-}
-
-//episode title format(card or option)
 function formatSeriesAndEpisode(type, episode) {
   let titleFormatCard = `${episode.name} - S${episode.season
     .toString()
     .padStart(2, "0")}E${episode.number.toString().padStart(2, "0")}`;
 
-  let titleFormatOption = `S${episode.season
+  let titleFormatDropDown = `S${episode.season
     .toString()
     .padStart(2, "0")}E${episode.number.toString().padStart(2, "0")} - ${
     episode.name
   }`;
 
-  return type === "card" ? titleFormatCard : titleFormatOption;
+  return type === "card" ? titleFormatCard : titleFormatDropDown;
 }
 
 homeButton.addEventListener("click", () => {
-  searchDiv.hidden = true;
   showList.hidden = false;
   showList.innerHTML = "";
+  searchDiv.classList.add("hidden");
+  episodeContainer.classList.add("hidden");
   setup();
   input.value = "";
 });
 
 function episodeCounter(filteredEpisodes) {
-  return `Displaying ${filteredEpisodes.length} / ${allEpisodes.length} episodes`;
+  return (searchCounter.innerText = `Displaying ${filteredEpisodes.length} / ${allEpisodes.length} episodes`);
 }
 
 window.onload = setup;
+
+//show selector
+// showSelector.addEventListener("change", onShowChange);
+
+// function onShowChange(event) {
+//   const showId = event.target.value;
+//   input.value = "";
+
+//   sendRequest(showId)
+//     .then((data) => {
+//       allEpisodes = data;
+//       episodeList();
+//       makePageForEpisodes(allEpisodes);
+//       episodeCounter(allEpisodes);
+//     })
+//     .catch((e) => console.log(e));
+// }
