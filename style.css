@@ -101,12 +101,16 @@ button {
   font-weight: 400;
   font-size: 20px;
   font-family:Georgia, 'Times New Roman', Times, serif;
-  background-color:rgb(68, 121, 172);
+  background-color:rgb(172, 110, 68);
   color:aliceblue;
   height: 40px;
 }
 
 .hidden {
   display: none;
+}
+.btn-div {
+  display: flex;
+  justify-content: flex-end;
 }
 
