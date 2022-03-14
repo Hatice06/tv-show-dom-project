@@ -27,7 +27,7 @@ searchCounter.className = "search-counter";
 //home button
 let homeButton = document.createElement("button");
 homeButton.className = "home-btn";
-homeButton.innerText = "BACK TO SHOWS";
+homeButton.innerText = "Back to Shows";
 
 searchDiv.append(
   homeButton,
@@ -78,13 +78,18 @@ function makePageForShows(shows) {
     const runtime = document.createElement("p");
     runtime.innerHTML = `<span>Runtime:</span> ${show.runtime}`;
     moreDetails.append(rated, genres, status, runtime);
-
+    const btnDiv = document.createElement("div");
+    btnDiv.className = "btn-div";
+    const btnEpisode = document.createElement("button");
+    btnEpisode.innerText = "Go to Episode";
+    btnDiv.appendChild(btnEpisode);
+    
     showDetails.append(img, summary, moreDetails);
-    showCard.append(heading, showDetails);
+    showCard.append(heading, showDetails, btnDiv);
     showList.appendChild(showCard);
 
     // click shows
-    showCard.addEventListener("click", () => {
+    btnEpisode.addEventListener("click", () => {
       searchDiv.classList.remove("hidden");
       const showId = show.id;
       sendRequest(showId).then((data) => {
