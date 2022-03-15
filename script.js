@@ -31,6 +31,8 @@ homeButton.innerText = "Back to Shows";
 
 searchDiv.append(
   homeButton,
+  "Shows:",
+  showSelector,
   "Episodes:",
   episodeSelector,
   input,
@@ -81,7 +83,7 @@ function makePageForShows(shows) {
     const btnDiv = document.createElement("div");
     btnDiv.className = "btn-div";
     const btnEpisode = document.createElement("button");
-    btnEpisode.innerText = "Go to Episode";
+    btnEpisode.innerText = "Go to Episodes";
     btnDiv.appendChild(btnEpisode);
     
     showDetails.append(img, summary, moreDetails);
@@ -96,7 +98,9 @@ function makePageForShows(shows) {
         allEpisodes = data;
         showList.hidden = true;
         makePageForEpisodes(allEpisodes);
+        showsList();
         episodeDropDownList();
+        scrollTop();
       });
     });
   });
@@ -138,6 +142,36 @@ function makePageForEpisodes(currentEpisodes) {
     episodeCounter(currentEpisodes);
     searchCounter.innerText = episodeCounter(currentEpisodes);
   });
+}
+
+//show option select dropdown menu
+ function showsList() {
+  let allShows = getAllShows().sort((a, b) => a.name.localeCompare(b.name));
+
+  showSelector.innerHTML = "";
+  allShows.forEach((show) => {
+    let option = document.createElement("option");
+    option.value = show.id;
+    option.innerText = show.name;
+    showSelector.appendChild(option);
+  });
+}
+
+// show selector
+showSelector.addEventListener("change", onShowChange);
+
+function onShowChange(event) {
+  const showId = event.target.value;
+  input.value = "";
+
+  sendRequest(showId)
+    .then((data) => {
+      allEpisodes = data;
+      episodeDropDownList();
+      makePageForEpisodes(allEpisodes);
+      episodeCounter(allEpisodes);
+    })
+    .catch((e) => console.log(e));
 }
 
 //episode option select dropdown menu
@@ -209,24 +243,14 @@ homeButton.addEventListener("click", () => {
 });
 
 function episodeCounter(filteredEpisodes) {
-  return (searchCounter.innerText = `Displaying ${filteredEpisodes.length} / ${allEpisodes.length} episodes`);
+  return (searchCounter.innerText = `${filteredEpisodes.length} / ${allEpisodes.length} episodes`);
 }
+
+let scrollTop = function () {
+  window.scrollTo(0, 0);
+};
 
 window.onload = setup;
 
-//show selector
-// showSelector.addEventListener("change", onShowChange);
 
-// function onShowChange(event) {
-//   const showId = event.target.value;
-//   input.value = "";
 
-//   sendRequest(showId)
-//     .then((data) => {
-//       allEpisodes = data;
-//       episodeList();
-//       makePageForEpisodes(allEpisodes);
-//       episodeCounter(allEpisodes);
-//     })
-//     .catch((e) => console.log(e));
-// }

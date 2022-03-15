@@ -18,22 +18,20 @@ html {
   box-shadow: rgba(0, 0, 0, 0.24) 0px 5px 10px;
 }
 
-
 .show-details {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
+  font-size: 17px;
 }
 
 .show-title {
   text-align: center;
-  font-family:Arial, Helvetica, sans-serif;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .more-details {
-  font-family:Arial, Helvetica, sans-serif;
-  background-color: antiquewhite;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   border-radius: 10px;
   width: fit-content;
   width: 20%;
@@ -45,18 +43,20 @@ html {
 .show-summary {
   width:45%;
   line-height: 2;
-  font-family:Arial, Helvetica, sans-serif;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  
 }
 
 .episode-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-
+  background-color: antiquewhite;
 }
 
 .episode-card {
-  background-color: antiquewhite;
+  background-color: rgb(221, 197, 162);
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   width: 20%;
   height: auto;
@@ -73,24 +73,29 @@ html {
   font-weight: 700;
 }
 
-input, .home-btn {
+input {
   padding: 10px;
   margin: 10px 10px 10px 32px;
   border-radius: 10px;
   border: 1px solid rgb(175, 164, 164);
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; 
 }
 
 select{
   width:auto;
-  min-width: 370px;
+  width: 320px;
   padding: 10px;
   margin: 10px 10px 10px 5px;
   border-radius: 10px;
+  font-size: 15px;
   border: 1px solid rgb(175, 164, 164);
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  background-color: antiquewhite;
 }
 
 .search-counter{
-  font-size: larger;
+  font-size: 17px;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 span{
@@ -100,10 +105,19 @@ span{
 button {
   font-weight: 400;
   font-size: 20px;
-  font-family:Georgia, 'Times New Roman', Times, serif;
-  background-color:rgb(172, 110, 68);
-  color:aliceblue;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  background-color: antiquewhite;
   height: 40px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 5px 10px;
+  padding: 10px;
+  margin: 10px 10px 10px 32px;
+   border: none;
+  border-radius: 10px;
+}
+button:hover {
+  background-color: rgb(219, 157, 24);
+  transition: 1s;
+  cursor: pointer;
 }
 
 .hidden {
